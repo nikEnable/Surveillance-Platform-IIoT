@@ -11,7 +11,7 @@
 WiFiClient wifiClient;
 PubSubClient client(wifiClient);
 
-#define DHTPIN A0 // Analog Pin sensor is connected to
+#define DHTPIN  7// Analog Pin sensor is connected to
 #define echoPin 2 // attach pin D2 Arduino to pin Echo of HC-SR04
 #define trigPin 3 //attach pin D3 Arduino to pin Trig of HC-SR04
 #define DHTTYPE DHT11 // type of sensor
@@ -21,7 +21,8 @@ DHT dht(DHTPIN, DHTTYPE);
 // defines variables
 long duration; // variable for the duration of sound wave travel
 int Distance; // variable for the distance measurement
- 
+String temperatureString;
+String humidityString;
 
 void connectWiFi()
 {
@@ -68,19 +69,21 @@ void createMQTTClient()
 void dht_hum() {
   dht.read();
   float humidity = dht.readHumidity();
+  humidityString = humidity;
+  client.publish(Client_pub_topic.c_str(), humidityString.c_str());
   Serial.print("Current humidity = ");
   Serial.print(humidity);
   Serial.println("%");
-  delay(5000);
 }
 
 void dht_temp() {
   dht.read();
   float temperature = dht.readTemperature();
+  temperatureString = temperature;
+  client.publish(Client_pub_topic.c_str(), temperatureString.c_str());
   Serial.print("Temperature = ");
   Serial.print(temperature);
   Serial.println("C");
-  delay(5000);
 }
 
 void setup() {
@@ -99,10 +102,12 @@ void setup() {
 void loop() {
   reconnectMQTTClient();
   client.loop();
-  string telemtry = "Hello Worold";
-  client.publish(Client_pub_topic.c_str(), telemtry.c_str());
-  Serial.println("Hello mqtt");
-  delay(2000);
+  dht_temp();
+  dht_hum();
+  delay(10000);
+  //string telemtry = "Hello Worold";
+  //client.publish(Client_pub_topic.c_str(), telemtry.c_str());
+  //Serial.println("Hello mqtt");
 }
 
 
