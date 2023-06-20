@@ -16,7 +16,7 @@ PubSubClient client(wifiClient);
 #define echoPin 7 // attach pin D7 Arduino to pin Echo of HC-SR04
 #define trigPin 6 //attach pin D6 Arduino to pin Trig of HC-SR04
 #define DHTTYPE DHT11 // type of sensor
-#define LED_BUILTIN 9// Digital Pin 
+#define LED_BUILTIN 9 // Digital Pin 
 
 DHT dht(DHTPIN, DHTTYPE);
 Servo servo;
@@ -43,6 +43,41 @@ void connectWiFi()
   Serial.println("You're connected to the network");
 }
 
+
+void clientCallback(char *topic, uint8_t *payload, unsigned int length)
+{
+    char buff[length + 1];
+    for (int i = 0; i < length; i++)
+    {
+        buff[i] = (char)payload[i];
+    }
+    buff[length] = '\0';
+
+    Serial.print("Message received:");
+    Serial.println(buff);
+    String message = buff;
+    Serial.println(message);
+
+    if (message == "1")
+    {
+      digitalWrite(LED_BUILTIN, HIGH);
+      // scan from 145 to 180 degrees with 1 sec/1 degree                                  
+      for(angle = 5; angle < 90; angle+=5)  
+      {                                  
+        servo.write(angle);                                  
+      }
+      delay(45000);
+      servo.write(45);
+      delay(10000);
+      for(angle = 45; angle >= 0; angle-=9)  
+      {                                  
+        servo.write(angle);                                  
+      }
+
+      digitalWrite(LED_BUILTIN, LOW);
+    }
+}
+
 void reconnectMQTTClient()
 {
     while (!client.connected())
@@ -52,7 +87,7 @@ void reconnectMQTTClient()
         if (client.connect(ClientName.c_str()))
         {
             Serial.println("connected");     
-            client.subscribe(Client_pub_topic.c_str());
+            client.subscribe(Client_sub_topic.c_str());
         }
         else
         {
@@ -66,7 +101,7 @@ void reconnectMQTTClient()
 void createMQTTClient()
 {
     client.setServer(Broker.c_str(), TCP_port);
-    //client.setCallback(clientCallback);
+    client.setCallback(clientCallback);
     reconnectMQTTClient();
 }
 
@@ -75,10 +110,11 @@ void dht_hum()
   dht.read();
   float humidity = dht.readHumidity();
   humidityString = humidity - 74.80;
-  client.publish(Client_pub_topic.c_str(), humidityString.c_str());
-  Serial.print("Current humidity = ");
-  Serial.print(humidity);
-  Serial.println("%");
+  if (humidityString != "nan")
+    client.publish(Client_pub_topic_hum.c_str(), humidityString.c_str());
+    Serial.print("Current humidity = ");
+    Serial.print(humidityString);
+    Serial.println("%");
 }
 
 void dht_temp() 
@@ -86,10 +122,11 @@ void dht_temp()
   dht.read();
   float temperature = dht.readTemperature();
   temperatureString = temperature + 12;
-  client.publish(Client_pub_topic.c_str(), temperatureString.c_str());
-  Serial.print("Temperature = ");
-  Serial.print(temperature);
-  Serial.println("C");
+  if (temperatureString != "nan")
+    client.publish(Client_pub_topic_temp.c_str(), temperatureString.c_str());
+    Serial.print("Temperature = ");
+    Serial.print(temperatureString);
+    Serial.println("C");
 }
 
 
@@ -154,7 +191,8 @@ void loop() {
   if (Distance < 10)
   {
     String value = "1";
-    client.publish(Client_pub_topic.c_str(), value.c_str());
+    client.publish(Client_pub_topic_flame.c_str(), value.c_str());
+    Serial.println("Hello");
     digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
     servo_mg90s();
     digitalWrite(LED_BUILTIN, LOW);  // turn the LED on (LOW is the voltage level)
@@ -164,7 +202,3 @@ void loop() {
   //client.publish(Client_pub_topic.c_str(), telemtry.c_str());
   //Serial.println("Hello mqtt");
 }
-
-
-
-
