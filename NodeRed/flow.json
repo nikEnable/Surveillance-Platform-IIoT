@@ -1,0 +1,400 @@
+[
+    {
+        "id": "acf25a6a6ce6da47",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "ea3f4264bc8b530d",
+        "type": "inject",
+        "z": "acf25a6a6ce6da47",
+        "name": "SendCommand",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "iiotnode\\conditions",
+        "payload": "1",
+        "payloadType": "str",
+        "x": 200,
+        "y": 120,
+        "wires": [
+            [
+                "71413a4e4b98973b"
+            ]
+        ]
+    },
+    {
+        "id": "71413a4e4b98973b",
+        "type": "mqtt out",
+        "z": "acf25a6a6ce6da47",
+        "name": "",
+        "topic": "iiotnode/condition",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "500257a930b69426",
+        "x": 510,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "22a7691c8d5ced1e",
+        "type": "mqtt in",
+        "z": "acf25a6a6ce6da47",
+        "name": "",
+        "topic": "iiotnode/flamedetection",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "500257a930b69426",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 860,
+        "y": 120,
+        "wires": [
+            [
+                "db6b20d8a7e5fc70"
+            ]
+        ]
+    },
+    {
+        "id": "db6b20d8a7e5fc70",
+        "type": "debug",
+        "z": "acf25a6a6ce6da47",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1140,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "67919b358ba0d6b6",
+        "type": "debug",
+        "z": "acf25a6a6ce6da47",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1120,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "6a5f76ef0335d4f7",
+        "type": "inject",
+        "z": "acf25a6a6ce6da47",
+        "name": "DROP TABLE",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "DROP TABLE MKR1010",
+        "payload": "",
+        "payloadType": "date",
+        "x": 310,
+        "y": 600,
+        "wires": [
+            [
+                "2e3fdb6b337a9fa1"
+            ]
+        ]
+    },
+    {
+        "id": "ad31d208b3abffde",
+        "type": "inject",
+        "z": "acf25a6a6ce6da47",
+        "name": "CREATE DB",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "CREATE TABLE MKR1010(  id integer PRIMARY KEY,  device_name text,  temp_value text, hum_value , timestamp datetime)",
+        "payload": "",
+        "payloadType": "date",
+        "x": 310,
+        "y": 460,
+        "wires": [
+            [
+                "2e3fdb6b337a9fa1"
+            ]
+        ]
+    },
+    {
+        "id": "71f64fa72089a1d3",
+        "type": "inject",
+        "z": "acf25a6a6ce6da47",
+        "name": "INSERT",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "INSERT INTO MKR1010(device_name) VALUES (\"test\")",
+        "payload": "",
+        "payloadType": "date",
+        "x": 310,
+        "y": 700,
+        "wires": [
+            [
+                "2e3fdb6b337a9fa1"
+            ]
+        ]
+    },
+    {
+        "id": "2e3fdb6b337a9fa1",
+        "type": "sqlite",
+        "z": "acf25a6a6ce6da47",
+        "mydb": "914aab51d47b4008",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "",
+        "x": 740,
+        "y": 560,
+        "wires": [
+            [
+                "67919b358ba0d6b6"
+            ]
+        ]
+    },
+    {
+        "id": "af40158f45fc72c0",
+        "type": "inject",
+        "z": "acf25a6a6ce6da47",
+        "name": "SELECT",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "SELECT * FROM MKR1010 ORDER BY device_name;",
+        "payload": "",
+        "payloadType": "date",
+        "x": 300,
+        "y": 520,
+        "wires": [
+            [
+                "2e3fdb6b337a9fa1"
+            ]
+        ]
+    },
+    {
+        "id": "760229cd885c60d6",
+        "type": "mqtt in",
+        "z": "acf25a6a6ce6da47",
+        "name": "",
+        "topic": "iiotnode/DHT11/temp",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "500257a930b69426",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 140,
+        "y": 280,
+        "wires": [
+            [
+                "e4f84d965278774f",
+                "b752c37bafb4474b"
+            ]
+        ]
+    },
+    {
+        "id": "e4f84d965278774f",
+        "type": "debug",
+        "z": "acf25a6a6ce6da47",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 440,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "d35c342f60385628",
+        "type": "function",
+        "z": "acf25a6a6ce6da47",
+        "name": "function 1",
+        "func": "var sqliteTimestamp = Math.round(Date.now() / 1000);\nvar device = \"MKR-WIFI1010\";\nvar sensor = \"DHT11\";\n\nvar query = \"INSERT INTO MKR1010 (device_name, temp_value, hum_value, timestamp) VALUES\"\nquery = query + \"('\" + device + \"','\" + msg.payload['iiotnode/DHT11/temp'] + \"', '\" + msg.payload['iiotnode/DHT11/hum'] + \"' ,'\" + sqliteTimestamp + \"' );\";\nmsg.topic = query;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1000,
+        "y": 260,
+        "wires": [
+            [
+                "2e3fdb6b337a9fa1"
+            ]
+        ]
+    },
+    {
+        "id": "0a1b486c3dbe31a4",
+        "type": "mqtt in",
+        "z": "acf25a6a6ce6da47",
+        "name": "",
+        "topic": "iiotnode/DHT11/hum",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "500257a930b69426",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 110,
+        "y": 380,
+        "wires": [
+            [
+                "b752c37bafb4474b"
+            ]
+        ]
+    },
+    {
+        "id": "1c7c7cd8319c9bc4",
+        "type": "function",
+        "z": "acf25a6a6ce6da47",
+        "name": "function 2",
+        "func": "var sqliteTimestamp = Math.round(Date.now() / 1000);\nvar device = \"MKR-WIFI1010\";\nvar sensor = \"DHT11\";\n\nvar query = \"INSERT INTO MKR1010 (device_name, hum_value, timestamp) VALUES\"\nquery = query + \"('\" + device + \"','\" + msg.payload + \"', '\" + sqliteTimestamp + \"' );\";\nmsg.topic = query;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b752c37bafb4474b",
+        "type": "join",
+        "z": "acf25a6a6ce6da47",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 610,
+        "y": 300,
+        "wires": [
+            [
+                "d35c342f60385628"
+            ]
+        ]
+    },
+    {
+        "id": "500257a930b69426",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "test.mosquitto.org",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "914aab51d47b4008",
+        "type": "sqlitedb",
+        "db": "MKR1010",
+        "mode": "RWC"
+    }
+]
