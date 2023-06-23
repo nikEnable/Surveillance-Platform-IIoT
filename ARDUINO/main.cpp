@@ -61,15 +61,17 @@ void clientCallback(char *topic, uint8_t *payload, unsigned int length)
     if (message == "1")
     {
       digitalWrite(LED_BUILTIN, HIGH);
-      // scan from 145 to 180 degrees with 1 sec/1 degree                                  
-      for(angle = 5; angle < 90; angle+=5)  
+      // scan from 145 to 180 degrees with 1 sec/1 degree 
+      servo.read(); 
+      Serial.println(servo.read());                               
+      for(angle = 0; angle < 90; angle+=5)  
       {                                  
         servo.write(angle);                                  
       }
       delay(45000);
       servo.write(45);
       delay(10000);
-      for(angle = 45; angle >= 0; angle-=9)  
+      for(angle = 45; angle > 0; angle-=9)  
       {                                  
         servo.write(angle);                                  
       }
@@ -110,11 +112,18 @@ void dht_hum()
   dht.read();
   float humidity = dht.readHumidity();
   humidityString = humidity - 74.80;
-  if (humidityString != "nan")
+   if (isnan(humidity)){
+    //randHum = random(50, 70);
+    //humidityString = randHum;
+    //client.publish(Client_pub_topic_hum.c_str(), humidityString.c_str());
+    Serial.println("Hum isnan: ");
+    //Serial.println(humidityString);
+   } else {
     client.publish(Client_pub_topic_hum.c_str(), humidityString.c_str());
     Serial.print("Current humidity = ");
     Serial.print(humidityString);
     Serial.println("%");
+   }
 }
 
 void dht_temp() 
@@ -122,11 +131,18 @@ void dht_temp()
   dht.read();
   float temperature = dht.readTemperature();
   temperatureString = temperature + 12;
-  if (temperatureString != "nan")
+   if (isnan(temperature)){
+    //randTemp = random(50, 70);
+    //temperatureString = randHum;
+    //client.publish(Client_pub_topic_temp.c_str(), temperatureString.c_str());
+    Serial.println("Temp isnan: ");
+    //Serial.println(humidityString);
+   } else {
     client.publish(Client_pub_topic_temp.c_str(), temperatureString.c_str());
-    Serial.print("Temperature = ");
+    Serial.print("Current Temp = ");
     Serial.print(temperatureString);
-    Serial.println("C");
+    Serial.println("%");
+   }
 }
 
 
@@ -152,8 +168,6 @@ void ultra_sonic()
 
 void servo_mg90s()
 {
-  // rotation to 145 degrees                                  
-  servo.write(145);
   // scan from 145 to 180 degrees with 1 sec/1 degree                                  
   for(angle = 145; angle < 180; angle++)  
   {                                  
