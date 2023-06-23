@@ -67,7 +67,7 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 860,
+        "x": 780,
         "y": 120,
         "wires": [
             [
@@ -88,112 +88,9 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1140,
+        "x": 1100,
         "y": 120,
         "wires": []
-    },
-    {
-        "id": "67919b358ba0d6b6",
-        "type": "debug",
-        "z": "acf25a6a6ce6da47",
-        "name": "debug 3",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 1120,
-        "y": 500,
-        "wires": []
-    },
-    {
-        "id": "6a5f76ef0335d4f7",
-        "type": "inject",
-        "z": "acf25a6a6ce6da47",
-        "name": "DROP TABLE",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "DROP TABLE MKR1010",
-        "payload": "",
-        "payloadType": "date",
-        "x": 310,
-        "y": 600,
-        "wires": [
-            [
-                "2e3fdb6b337a9fa1"
-            ]
-        ]
-    },
-    {
-        "id": "ad31d208b3abffde",
-        "type": "inject",
-        "z": "acf25a6a6ce6da47",
-        "name": "CREATE DB",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "CREATE TABLE MKR1010(  id integer PRIMARY KEY,  device_name text,  temp_value text, hum_value , timestamp datetime)",
-        "payload": "",
-        "payloadType": "date",
-        "x": 310,
-        "y": 460,
-        "wires": [
-            [
-                "2e3fdb6b337a9fa1"
-            ]
-        ]
-    },
-    {
-        "id": "71f64fa72089a1d3",
-        "type": "inject",
-        "z": "acf25a6a6ce6da47",
-        "name": "INSERT",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "INSERT INTO MKR1010(device_name) VALUES (\"test\")",
-        "payload": "",
-        "payloadType": "date",
-        "x": 310,
-        "y": 700,
-        "wires": [
-            [
-                "2e3fdb6b337a9fa1"
-            ]
-        ]
     },
     {
         "id": "2e3fdb6b337a9fa1",
@@ -203,11 +100,12 @@
         "sqlquery": "msg.topic",
         "sql": "",
         "name": "",
-        "x": 740,
-        "y": 560,
+        "x": 730,
+        "y": 540,
         "wires": [
             [
-                "67919b358ba0d6b6"
+                "7b898fdba5b48a95",
+                "86249d7af2c46514"
             ]
         ]
     },
@@ -215,7 +113,7 @@
         "id": "af40158f45fc72c0",
         "type": "inject",
         "z": "acf25a6a6ce6da47",
-        "name": "SELECT",
+        "name": "SELECT TEMP != NaN",
         "props": [
             {
                 "p": "payload"
@@ -225,15 +123,15 @@
                 "vt": "str"
             }
         ],
-        "repeat": "",
+        "repeat": "120",
         "crontab": "",
         "once": false,
-        "onceDelay": 0.1,
-        "topic": "SELECT * FROM MKR1010 ORDER BY device_name;",
+        "onceDelay": "1",
+        "topic": "SELECT temp_value FROM MKR1010 WHERE temp_value != ' nan';",
         "payload": "",
         "payloadType": "date",
-        "x": 300,
-        "y": 520,
+        "x": 170,
+        "y": 600,
         "wires": [
             [
                 "2e3fdb6b337a9fa1"
@@ -254,47 +152,30 @@
         "rh": 0,
         "inputs": 0,
         "x": 140,
-        "y": 280,
+        "y": 300,
         "wires": [
             [
-                "e4f84d965278774f",
                 "b752c37bafb4474b"
             ]
         ]
     },
     {
-        "id": "e4f84d965278774f",
-        "type": "debug",
-        "z": "acf25a6a6ce6da47",
-        "name": "debug 1",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 440,
-        "y": 220,
-        "wires": []
-    },
-    {
         "id": "d35c342f60385628",
         "type": "function",
         "z": "acf25a6a6ce6da47",
-        "name": "function 1",
-        "func": "var sqliteTimestamp = Math.round(Date.now() / 1000);\nvar device = \"MKR-WIFI1010\";\nvar sensor = \"DHT11\";\n\nvar query = \"INSERT INTO MKR1010 (device_name, temp_value, hum_value, timestamp) VALUES\"\nquery = query + \"('\" + device + \"','\" + msg.payload['iiotnode/DHT11/temp'] + \"', '\" + msg.payload['iiotnode/DHT11/hum'] + \"' ,'\" + sqliteTimestamp + \"' );\";\nmsg.topic = query;\nreturn msg;",
+        "name": "insertMKR1010",
+        "func": "var sqliteTimestamp = Math.round(Date.now() / 1000);\nvar device = \"MKR-WIFI1010\";\nvar sensor = \"DHT11\";\n\nvar query = \"INSERT INTO MKR1010 (device_name, temp_value, hum_value, timestamp) VALUES\"\nquery = query + \"('\" + device + \"','\" + msg.payload['iiotnode/DHT11/temp'] + \"', '\" + msg.payload['iiotnode/DHT11/hum'] + \"' ,'\" + sqliteTimestamp + \"' );\";\nmsg.topic = query;\nconsole.log(`${msg}`);\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1000,
-        "y": 260,
+        "x": 780,
+        "y": 340,
         "wires": [
             [
-                "2e3fdb6b337a9fa1"
+                "2e3fdb6b337a9fa1",
+                "9198821cd21b1279"
             ]
         ]
     },
@@ -312,28 +193,11 @@
         "rh": 0,
         "inputs": 0,
         "x": 110,
-        "y": 380,
+        "y": 400,
         "wires": [
             [
                 "b752c37bafb4474b"
             ]
-        ]
-    },
-    {
-        "id": "1c7c7cd8319c9bc4",
-        "type": "function",
-        "z": "acf25a6a6ce6da47",
-        "name": "function 2",
-        "func": "var sqliteTimestamp = Math.round(Date.now() / 1000);\nvar device = \"MKR-WIFI1010\";\nvar sensor = \"DHT11\";\n\nvar query = \"INSERT INTO MKR1010 (device_name, hum_value, timestamp) VALUES\"\nquery = query + \"('\" + device + \"','\" + msg.payload + \"', '\" + sqliteTimestamp + \"' );\";\nmsg.topic = query;\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 580,
-        "y": 400,
-        "wires": [
-            []
         ]
     },
     {
@@ -356,13 +220,364 @@
         "reduceInit": "",
         "reduceInitType": "",
         "reduceFixup": "",
-        "x": 610,
-        "y": 300,
+        "x": 550,
+        "y": 340,
         "wires": [
             [
                 "d35c342f60385628"
             ]
         ]
+    },
+    {
+        "id": "7b898fdba5b48a95",
+        "type": "function",
+        "z": "acf25a6a6ce6da47",
+        "name": "calcAVG",
+        "func": "\nvar str = msg.payload;\nvar data = [];\nvar count = 0;\n//var fin = 0;\nvar avg_temp = 0;\nvar floatTemp = 0;\nvar sum = 0;\nif (str !== undefined && str !== NaN){\n        for (var i = 0; i < msg.payload.length; i++) {\n            data = str[i][\"temp_value\"] ;\n            if (data != ' nan'){\n                floatTemp = parseFloat(data);\n                sum += floatTemp;\n                count++;\n            }        \n        }\n        avg_temp = sum / count;\n        msg.payload = avg_temp.toFixed(2);\n        var newMsg = { payload: msg.payload };\n        return newMsg;\n\n\n    }\n\n\n\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 740,
+        "y": 680,
+        "wires": [
+            [
+                "fbe49b3fbaf52afc"
+            ]
+        ]
+    },
+    {
+        "id": "867f4f39f12835b9",
+        "type": "debug",
+        "z": "acf25a6a6ce6da47",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1120,
+        "y": 1180,
+        "wires": []
+    },
+    {
+        "id": "9198821cd21b1279",
+        "type": "debug",
+        "z": "acf25a6a6ce6da47",
+        "name": "debug 5",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1040,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "86249d7af2c46514",
+        "type": "debug",
+        "z": "acf25a6a6ce6da47",
+        "name": "debug 6",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1040,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "3db2e2d9434e226e",
+        "type": "function",
+        "z": "acf25a6a6ce6da47",
+        "name": "getLastValue",
+        "func": "var str = msg.payload;\nif (str !== undefined && str.length > 0) {\n    var lastValue = str[str.length - 1]['avg_temp_value'];\n    msg.payload = lastValue;\n    return msg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1060,
+        "y": 960,
+        "wires": [
+            [
+                "f44ddf221216991a",
+                "7eb7a67e6f7a9292"
+            ]
+        ]
+    },
+    {
+        "id": "f44ddf221216991a",
+        "type": "debug",
+        "z": "acf25a6a6ce6da47",
+        "name": "debug 7",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1220,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "e138dc0335a8d676",
+        "type": "sqlite",
+        "z": "acf25a6a6ce6da47",
+        "mydb": "1095faaedfd9cfb6",
+        "sqlquery": "msg.topic",
+        "sql": "newMsg.topic",
+        "name": "",
+        "x": 750,
+        "y": 960,
+        "wires": [
+            [
+                "8510d3defa5eac96",
+                "7607ddbaaf57c699",
+                "c183a10f57bd9a6a",
+                "3db2e2d9434e226e"
+            ]
+        ]
+    },
+    {
+        "id": "8510d3defa5eac96",
+        "type": "debug",
+        "z": "acf25a6a6ce6da47",
+        "name": "debug 8",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 980,
+        "y": 880,
+        "wires": []
+    },
+    {
+        "id": "fbe49b3fbaf52afc",
+        "type": "function",
+        "z": "acf25a6a6ce6da47",
+        "name": "insertAVG",
+        "func": "\nvar str = msg.payload;\nvar sqliteTimestamp = Math.round(Date.now() / 1000);\nvar device = \"MKR1010\"\n\nif (str !== \"NaN\"){\n    var query = \"INSERT INTO AVG (device_name, avg_temp_value, timestamp) VALUES\"\n    query = query + \"('\" + device + \"','\" + msg.payload + \"','\" + sqliteTimestamp + \"' );\";\n    msg.topic = query;\n    return msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 760,
+        "wires": [
+            [
+                "e138dc0335a8d676"
+            ]
+        ]
+    },
+    {
+        "id": "0c82e96b447b59d4",
+        "type": "inject",
+        "z": "acf25a6a6ce6da47",
+        "name": "SELECT AVERAGE TEMP",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "120",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "SELECT avg_temp_value FROM AVG WHERE avg_temp_value != ' nan';",
+        "payload": "",
+        "payloadType": "date",
+        "x": 150,
+        "y": 960,
+        "wires": [
+            [
+                "e138dc0335a8d676"
+            ]
+        ]
+    },
+    {
+        "id": "7607ddbaaf57c699",
+        "type": "function",
+        "z": "acf25a6a6ce6da47",
+        "name": "publiTemp",
+        "func": "var str = msg.payload;\nvar str1 = 0;\nvar str2 = 0;\nvar value = 1;\nif (str !== undefined && msg.payload.length > 2) {\n    str1 = parseFloat(str[str.length - 1]['avg_temp_value']);\n    str2 = parseFloat(str[str.length - 2]['avg_temp_value']);\n\n    if ((str1 - str2 > 2) || (str2 - str1 > 2)) {\n        msg.topic = \"iiotnode\\conditions\";\n        msg.payload = value;\n        return msg;\n        \n    } else {\n        return null;\n    }\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 850,
+        "y": 1200,
+        "wires": [
+            [
+                "867f4f39f12835b9",
+                "156530796051f48b"
+            ]
+        ]
+    },
+    {
+        "id": "156530796051f48b",
+        "type": "mqtt out",
+        "z": "acf25a6a6ce6da47",
+        "name": "",
+        "topic": "iiotnode/condition",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "500257a930b69426",
+        "x": 1130,
+        "y": 1260,
+        "wires": []
+    },
+    {
+        "id": "1263f4a4ce45a22f",
+        "type": "sqlite",
+        "z": "acf25a6a6ce6da47",
+        "mydb": "2f033a13846ddf2a",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "",
+        "x": 1170,
+        "y": 1080,
+        "wires": [
+            [
+                "936c55e27a9ae615"
+            ]
+        ]
+    },
+    {
+        "id": "8e98e247e853e175",
+        "type": "inject",
+        "z": "acf25a6a6ce6da47",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "SELECT * FROM  DB3",
+        "payload": "",
+        "payloadType": "date",
+        "x": 1380,
+        "y": 880,
+        "wires": [
+            [
+                "1263f4a4ce45a22f"
+            ]
+        ]
+    },
+    {
+        "id": "936c55e27a9ae615",
+        "type": "debug",
+        "z": "acf25a6a6ce6da47",
+        "name": "debug 9",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1360,
+        "y": 1080,
+        "wires": []
+    },
+    {
+        "id": "c183a10f57bd9a6a",
+        "type": "function",
+        "z": "acf25a6a6ce6da47",
+        "name": "insertDB3",
+        "func": "var sqliteTimestamp = Math.round(Date.now() / 1000);\nvar str = msg.payload;\nvar str1 = 0;\nvar str2 = 0;\nvar value = 1;\n\n\nif (str !== undefined && msg.payload.length > 2) {\n    str1 = parseFloat(str[str.length - 1]['avg_temp_value']);\n    str2 = parseFloat(str[str.length - 2]['avg_temp_value']);\n\n    if ((str1 - str2 > 2) || (str2 - str1 > 2)) {\n        var query = \"INSERT INTO DB3(value, timestamp) VALUES\"\n        query = query + \"('\" + value + \"','\" + sqliteTimestamp + \"' );\";\n        msg.topic = query;\n        return msg;\n    } \n\n} else {\n    return null;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 990,
+        "y": 1080,
+        "wires": [
+            [
+                "1263f4a4ce45a22f"
+            ]
+        ]
+    },
+    {
+        "id": "7eb7a67e6f7a9292",
+        "type": "ui_gauge",
+        "z": "acf25a6a6ce6da47",
+        "name": "",
+        "group": "c75a635218e0f941",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "gtype": "donut",
+        "title": "gauge",
+        "label": "units",
+        "format": " {{msg.payload}}",
+        "min": 0,
+        "max": "60",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 1230,
+        "y": 940,
+        "wires": []
+    },
+    {
+        "id": "b3f6a36faf43b4b9",
+        "type": "debug",
+        "z": "acf25a6a6ce6da47",
+        "name": "debug 10",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1280,
+        "y": 780,
+        "wires": []
     },
     {
         "id": "500257a930b69426",
@@ -396,5 +611,36 @@
         "type": "sqlitedb",
         "db": "MKR1010",
         "mode": "RWC"
+    },
+    {
+        "id": "1095faaedfd9cfb6",
+        "type": "sqlitedb",
+        "db": "AVG",
+        "mode": "RWC"
+    },
+    {
+        "id": "2f033a13846ddf2a",
+        "type": "sqlitedb",
+        "db": "DB3",
+        "mode": "RWC"
+    },
+    {
+        "id": "c75a635218e0f941",
+        "type": "ui_group",
+        "name": "AVG TEMPERATURE",
+        "tab": "12ddba593dcdd314",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "12ddba593dcdd314",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
     }
 ]
