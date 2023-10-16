@@ -1,4 +1,4 @@
-Surveillance-Platform-IIoT
+Surveillance-Platform-IIoT:
 You can select the location where the Node-Red platform will run, meaning you can choose to run the platform on your local PC or on a Raspberry Pi (instructions: https://nodered.org/docs/getting-started/raspberrypi) or in the cloud environment of Flowforge. Please note that if you choose to use the cloud, you'll need to create a free account on the Flowforge cloud environment website at https://app.flowforge.com/account/create to access Node-Red. In Flowforge, you can activate a free instance of Node-Red for 30 days, where you can install the Node-Red dashboard (Note: you won't set up billing details). For the MQTT broker, you can either use the Mosquitto broker installed on your local PC or on the Raspberry Pi, or you can use one of the available online brokers (e.g., broker.hivemq.com, test.mosquitto.org, ...). The IIoT node's microcontroller can be an Arduino with an Ethernet Shield, a WeMos, or an Arduino Wi-Fi board.
 
 i. Initialize network sensor/actuator connections & MQTT broker. 
