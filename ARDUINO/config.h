@@ -3,11 +3,11 @@
 using namespace std;
 
 // WiFi Credentials
-char SSID[] = "WIND_2.4G_BD23DC"; 
-char PASS[] = "gKpfzqHtCH";  
+char SSID[] = "********"; 
+char PASS[] = "********";  
 
 // MQTT settings
-const string ID = "nikEnable";
+const string ID = "********";
 const string Broker = "test.mosquitto.org";
 const string ClientName = ID + "IIoT_client";
 const int TCP_port = 1883;
